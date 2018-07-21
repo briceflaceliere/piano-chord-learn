@@ -1,16 +1,16 @@
 $ = window.jQuery = require('jquery');
 var WebMidi = require('webmidi');
 
-const notes = ['C', 'C# / B♭', 'D', 'D# / M♭', 'E', 'F', 'F# / G♭', 'G', 'G# / A♭', 'A', 'A# / B♭', 'B'];
+const notes = ['C', 'C# / B♭', 'D', 'D# / E♭', 'E', 'F', 'F# / G♭', 'G', 'G# / A♭', 'A', 'A# / B♭', 'B'];
 const chordsFr = {
     'C': 'Do majeur', 'Cm': 'Do mineur', 'C# / B♭': 'Do dièse majeur / Ré bémol majeur', 'C#m / B♭m': 'Do dièse mineur / Ré bémol mineur',
-    'D': 'Ré majeur', 'Dm': 'Ré mineur', 'D# / M♭': 'Ré dièse majeur / Mi bémol majeur', 'D#m / M♭m': 'Ré dièse mineur / Mi bémol mineur',
+    'D': 'Ré majeur', 'Dm': 'Ré mineur', 'D# / E♭': 'Ré dièse majeur / Mi bémol majeur', 'D#m / E♭m': 'Ré dièse mineur / Mi bémol mineur',
     'E': 'Mi majeur', 'Em': 'Mi mineur',
     'F': 'Fa majeur', 'Fm': 'Fa mineur', 'F# / G♭': 'Fa dièse majeur / Sol bémol majeur', 'F#m / G♭m': 'Fa dièse mineur / Sol bémol mineur',
     'G': 'Sol majeur', 'Gm': 'Sol mineur','G# / A♭': 'Sol dièse majeur / La bémol majeur', 'G#m / A♭m': 'Sol dièse mineur / La bémol mineur',
     'A': 'La majeur',  'Am': 'La mineur', 'A# / B♭': 'La dièse majeur / Si bémol majeur', 'A#m / B♭m': 'La dièse mineur / Si bémol mineur'
 };
-const replaceNotes = {'C#': 'C# / B♭', 'D#': 'D# / M♭', 'F#': 'F# / G♭', 'G#': 'G# / A♭', 'A#': 'A# / B♭'};
+const replaceNotes = {'C#': 'C# / B♭', 'D#': 'D# / E♭', 'F#': 'F# / G♭', 'G#': 'G# / A♭', 'A#': 'A# / B♭'};
 var chords = {};
 
 
@@ -133,43 +133,58 @@ WebMidi.enable(function (err) {
         $chordPlayHistory.find('li').slice(5).remove();
     };
 
+    var currentIcon = '🤔';
+
     var onInputKeys = function () {
         console.log('Current keys', currentkeys);
         currentkeys.sort();
         var key = currentkeys.join('|');
-        var chord = chords[key] ? chords[key] : '😭';
+        var chord = chords[key] ? chords[key] : false;
 
         $chordPlayNote.html('&nbsp;');
         currentkeys.forEach(function(key){
             $chordPlayNote.append('<span class="badge badge-secondary">' + key + '</span>');
         });
 
-        $chordPlay.text(chord);
+
         $chordPlayFr.text(chordsFr[chord] ? chordsFr[chord] : ' ');
 
-        if (chord != '😭' && key == chordToPlay) {
+        if (chord && key == chordToPlay) {
             //OK
+            currentIcon = '🤗';
+            $chordPlay.text(currentIcon);
             addToHistory(chord, true);
             $chordToPlayAndChordPlay.addClass('valid');
             setTimeout(function () {
                 $chordToPlayAndChordPlay.removeClass('valid');
                 changeChordToPlay();
+                setTimeout(function () {
+                    $chordPlay.text('🤔');
+                }, 1500)
             }, 1500);
-        } else if (chord != '😭' && key != chordToPlay) {
+        } else if (chord && key != chordToPlay) {
             //KO
+            $chordPlay.text(chord);
             addToHistory(chord, false);
             $chordToPlayAndChordPlay.addClass('error');
             setTimeout(function () {
                 $chordToPlayAndChordPlay.removeClass('error');
+                $chordPlay.text('😭');
+                setTimeout(function () {
+                    $chordPlay.text('🤔');
+                }, 1500)
             }, 1500);
+        } else if (key != '') {
+            $chordPlay.text('🤔');
         }
+
     };
 
     var changeInput = function(inputId) {
         var input = WebMidi.getInputById(inputId);
         if (currentInput) {
             currentInput.removeListener();
-        }
+        }1
         console.log('Change input', input.name);
         currentInput = input;
         currentkeys = [];
