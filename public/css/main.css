@@ -1,0 +1,61 @@
+.main-container {
+   margin-top: 10px;
+   text-align: center;
+}
+
+.main-content {
+
+    margin-top: 10%;
+}
+
+.main-content.disable {
+    opacity: 0.2;
+}
+
+.valid {
+    background-color: #bdffb6;
+}
+
+.error {
+    background-color: #ffafb8;
+}
+
+.chord-to-play-container {
+}
+
+#chord-to-play {
+    font-size: 10em;
+    font-weight: bold;
+}
+
+#chord-play {
+    font-size: 5em;
+    margin: 0;
+    padding: 0;
+}
+
+#chord-play-history {
+    list-style: none;
+    font-size: 1.2em;
+    text-align: left;
+    padding:0;
+    margin: 0;
+    color: #868686;
+}
+
+#chord-play-history li {
+    border-top: 1px solid #eaeaea;
+    padding: 3px 10px;
+
+}
+
+#chord-to-play-note,
+#chord-play-note {
+    height: 30px;
+}
+
+#chord-to-play-note span,
+#chord-play-note span{
+    margin: 0 3px;
+    display: inline-block;
+}
